@@ -51,14 +51,14 @@ def add_obs(arr, point1, point2):
             for i in range(y + 1, point2[1]):
                 arr.append((x, i))
         else:
-            for i in range(point2[1] - 1, y):
+            for i in range(point2[1] + 1, y):
                 arr.append((x, i))
     if y == point2[1]:
         if x < point2[0]:
             for i in range(x + 1, point2[0]):
                 arr.append((i, y))
         else:   
-            for i in range(point2[0] - 1, x):
+            for i in range(point2[0] + 1, x):
                 arr.append((i, y))
 f = open("text.txt",mode = 'r',encoding = 'utf-8')
 
@@ -94,7 +94,11 @@ for i in range(0, obstacles_n):
 
 print(obstacles_arr)
 arr = []
-add_obs(arr, source_point, goal_point)
+# Add Obstacles
+for obs in obstacles_arr:
+    for i in range(0, len(obs) - 1):
+        add_obs(arr, obs[i], obs[i + 1])
+    add_obs(arr, obs[len(obs) - 1], obs[0])
 obstacles_arr.append(arr)
 print(obstacles_arr)
 run = True
@@ -111,7 +115,7 @@ while run:
     draw_rect(BLUE, goal_point)
     for i in range(0, obstacles_n + 1):
         for j in range(0, len(obstacles_arr[i])):
-            draw_rect(COLOR_ARR[i], obstacles_arr[i][j])
+            draw_rect(RED, obstacles_arr[i][j])
             if i == obstacles_n:
                 draw_rect(RED, obstacles_arr[i][j])
 
