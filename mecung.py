@@ -104,13 +104,13 @@ print(obstacles_arr)
 
 # DFS - Search
 DFS_Stack = []
-temp_arr = []
+temp_DFS = []
 DFS_Stack.append(source_point)
 while goal_point not in DFS_Stack:
     topPoint = DFS_Stack[len(DFS_Stack) - 1]
     x = topPoint[0]
     y = topPoint[1]
-    if ((x + 1, y) not in DFS_Stack and (x + 1, y) not in temp_arr and 0 <= x + 1 < length and 0 <= y < width):
+    if ((x + 1, y) not in DFS_Stack and (x + 1, y) not in temp_DFS and 0 <= x + 1 < length and 0 <= y < width):
         check = True
         for obs in obstacles_arr:
             if (x + 1, y) in obs:
@@ -119,8 +119,8 @@ while goal_point not in DFS_Stack:
         if check:
             DFS_Stack.append((x + 1, y))
         else:
-            temp_arr.append((x + 1, y))
-    elif ((x, y + 1) not in DFS_Stack and (x, y + 1) not in temp_arr and 0 <= x < length and 0 <= y + 1 < width):
+            temp_DFS.append((x + 1, y))
+    elif ((x, y + 1) not in DFS_Stack and (x, y + 1) not in temp_DFS and 0 <= x < length and 0 <= y + 1 < width):
         check = True
         for obs in obstacles_arr:
             if (x, y + 1) in obs:
@@ -129,8 +129,8 @@ while goal_point not in DFS_Stack:
         if check:
             DFS_Stack.append((x, y + 1))
         else:
-            temp_arr.append((x, y + 1))
-    elif ((x - 1, y) not in DFS_Stack and (x - 1, y) not in temp_arr and 0 <= x - 1 < length and 0 <= y < width):
+            temp_DFS.append((x, y + 1))
+    elif ((x - 1, y) not in DFS_Stack and (x - 1, y) not in temp_DFS and 0 <= x - 1 < length and 0 <= y < width):
         check = True
         for obs in obstacles_arr:
             if (x - 1, y) in obs:
@@ -139,8 +139,8 @@ while goal_point not in DFS_Stack:
         if check:
             DFS_Stack.append((x - 1, y))
         else:
-            temp_arr.append((x - 1, y))
-    elif ((x, y - 1) not in DFS_Stack and (x, y - 1) not in temp_arr and 0 <= x < length and 0 <= y - 1 < width):
+            temp_DFS.append((x - 1, y))
+    elif ((x, y - 1) not in DFS_Stack and (x, y - 1) not in temp_DFS and 0 <= x < length and 0 <= y - 1 < width):
         check = True
         for obs in obstacles_arr:
             if (x, y - 1) in obs:
@@ -149,12 +149,57 @@ while goal_point not in DFS_Stack:
         if check:
             DFS_Stack.append((x, y - 1))
         else:
-            temp_arr.append((x, y - 1))
+            temp_DFS.append((x, y - 1))
     else:
         temp = DFS_Stack.pop()
-        temp_arr.append(temp)
+        temp_DFS.append(temp)
 
 print("\n\n", DFS_Stack, "\n\n")
+
+# BFS -Search
+BFS_Queue = []
+temp_BFS = []
+current = source_point
+while goal_point not in BFS_Queue:
+    x = current[0]
+    y = current[1]
+    if ((x + 1, y) not in BFS_Queue and (x + 1, y) not in temp_BFS and 0 <= x + 1 < length and 0 <= y < width):
+        check = True
+        for obs in obstacles_arr:
+            if (x + 1, y) in obs:
+                check = False
+                break
+        if check:
+            BFS_Queue.insert(0, (x + 1, y))
+    if ((x, y + 1) not in BFS_Queue and (x, y + 1) not in temp_BFS and 0 <= x < length and 0 <= y + 1 < width):
+        check = True
+        for obs in obstacles_arr:
+            if (x, y + 1) in obs:
+                check = False
+                break
+        if check:
+            BFS_Queue.insert(0, (x, y + 1))
+    if ((x - 1, y) not in BFS_Queue and (x - 1, y) not in temp_BFS and 0 <= x - 1 < length and 0 <= y < width):
+        check = True
+        for obs in obstacles_arr:
+            if (x - 1, y) in obs:
+                check = False
+                break
+        if check:
+            BFS_Queue.insert(0, (x - 1, y))
+    if ((x, y - 1) not in BFS_Queue and (x, y - 1) not in temp_BFS and 0 <= x < length and 0 <= y - 1 < width):
+        check = True
+        for obs in obstacles_arr:
+            if (x, y - 1) in obs:
+                check = False
+                break
+        if check:
+            BFS_Queue.insert(0, (x, y - 1))
+    print(BFS_Queue)
+    current = BFS_Queue.pop()
+    if current not in temp_BFS:
+        temp_BFS.append(current)
+
 run = True
 while run:
     screen.fill(BLACK)
@@ -171,11 +216,14 @@ while run:
             if i == obstacles_n:
                 draw_rect(RED, obstacles_arr[i][j])
 
-    for i in range(0, len(DFS_Stack)):
-        if(i % 5 == 0):
-            draw_rect(COLOR_ARR[0], DFS_Stack[i])
-        else:
-            draw_rect(COLOR_ARR[2], DFS_Stack[i])
+    # for i in range(0, len(DFS_Stack)):
+    #     if(i % 5 == 0):
+    #         draw_rect(COLOR_ARR[0], DFS_Stack[i])
+    #     else:
+    #         draw_rect(COLOR_ARR[2], DFS_Stack[i])
+
+    for i in range(0, len(temp_BFS)):
+        draw_rect(COLOR_ARR[1], temp_BFS[i])
 
 
     draw_rect(BLUE, source_point)
