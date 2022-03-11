@@ -22,7 +22,6 @@ def to_int(arr_point):
 def add_obs(arr, point1, point2):
     delta_x = point2[0] - point1[0]
     delta_y = point2[1] - point1[1]
-    print(delta_x, " - ", delta_y)
     
     x, y = point1[0], point1[1]
     if delta_x > 0 and delta_y > 0:
@@ -92,7 +91,6 @@ for i in range(0, obstacles_n):
     to_int(temp)
     obstacles_arr.append(temp)
 
-print(obstacles_arr)
 arr = []
 # Add Obstacles
 for obs in obstacles_arr:
@@ -100,7 +98,63 @@ for obs in obstacles_arr:
         add_obs(arr, obs[i], obs[i + 1])
     add_obs(arr, obs[len(obs) - 1], obs[0])
 obstacles_arr.append(arr)
+print("Obstacles: ")
 print(obstacles_arr)
+
+
+# DFS - Search
+DFS_Stack = []
+temp_arr = []
+DFS_Stack.append(source_point)
+while goal_point not in DFS_Stack:
+    topPoint = DFS_Stack[len(DFS_Stack) - 1]
+    x = topPoint[0]
+    y = topPoint[1]
+    if ((x + 1, y) not in DFS_Stack and (x + 1, y) not in temp_arr and 0 <= x + 1 < length and 0 <= y < width):
+        check = True
+        for obs in obstacles_arr:
+            if (x + 1, y) in obs:
+                check = False
+                break
+        if check:
+            DFS_Stack.append((x + 1, y))
+        else:
+            temp_arr.append((x + 1, y))
+    elif ((x, y + 1) not in DFS_Stack and (x, y + 1) not in temp_arr and 0 <= x < length and 0 <= y + 1 < width):
+        check = True
+        for obs in obstacles_arr:
+            if (x, y + 1) in obs:
+                check = False
+                break
+        if check:
+            DFS_Stack.append((x, y + 1))
+        else:
+            temp_arr.append((x, y + 1))
+    elif ((x - 1, y) not in DFS_Stack and (x - 1, y) not in temp_arr and 0 <= x - 1 < length and 0 <= y < width):
+        check = True
+        for obs in obstacles_arr:
+            if (x - 1, y) in obs:
+                check = False
+                break
+        if check:
+            DFS_Stack.append((x - 1, y))
+        else:
+            temp_arr.append((x - 1, y))
+    elif ((x, y - 1) not in DFS_Stack and (x, y - 1) not in temp_arr and 0 <= x < length and 0 <= y - 1 < width):
+        check = True
+        for obs in obstacles_arr:
+            if (x, y - 1) in obs:
+                check = False
+                break
+        if check:
+            DFS_Stack.append((x, y - 1))
+        else:
+            temp_arr.append((x, y - 1))
+    else:
+        temp = DFS_Stack.pop()
+        temp_arr.append(temp)
+
+print("\n\n", DFS_Stack, "\n\n")
 run = True
 while run:
     screen.fill(BLACK)
@@ -111,13 +165,20 @@ while run:
         for j in range(0, width):
             if (i + j) % 2 == 0:
                 draw_rect(BLACK_1, (i, j))
-    draw_rect(BLUE, source_point)
-    draw_rect(BLUE, goal_point)
     for i in range(0, obstacles_n + 1):
         for j in range(0, len(obstacles_arr[i])):
             draw_rect(RED, obstacles_arr[i][j])
             if i == obstacles_n:
                 draw_rect(RED, obstacles_arr[i][j])
 
+    for i in range(0, len(DFS_Stack)):
+        if(i % 5 == 0):
+            draw_rect(COLOR_ARR[0], DFS_Stack[i])
+        else:
+            draw_rect(COLOR_ARR[2], DFS_Stack[i])
+
+
+    draw_rect(BLUE, source_point)
+    draw_rect(BLUE, goal_point)
     pygame.display.flip()
 
