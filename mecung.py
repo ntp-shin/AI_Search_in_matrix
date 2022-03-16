@@ -19,6 +19,12 @@ def to_int(arr_point):
     for i in range(0, len(arr_point)):
         arr_point[i] = (int(arr_point[i][0]), int(arr_point[i][1]))
 
+def distance(p1, p2):
+    return (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2
+
+def distance2(p1, p2):
+    return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
+
 def add_obs(arr, point1, point2):
     delta_x = point2[0] - point1[0]
     delta_y = point2[1] - point1[1]
@@ -200,6 +206,68 @@ while goal_point not in BFS_Queue:
     if current not in temp_BFS:
         temp_BFS.append(current)
 
+# Greedy-best first search _ GFS
+GFS_arr = []
+temp_GFS = []
+current = source_point
+GFS_arr.append(current)
+
+while goal_point not in GFS_arr:
+    x = current[0]
+    y = current[1]
+
+    tempPoint = []
+
+    if ((x + 1, y) not in GFS_arr and (x + 1, y) not in temp_GFS and 0 <= x + 1 < length and 0 <= y < width):
+        check = True
+        for obs in obstacles_arr:
+            if (x + 1, y) in obs:
+                check = False
+                break
+        if check:
+            tempPoint.append((x + 1, y))
+    if ((x, y + 1) not in GFS_arr and (x, y + 1) not in temp_GFS and 0 <= x < length and 0 <= y + 1 < width):
+        check = True
+        for obs in obstacles_arr:
+            if (x, y + 1) in obs:
+                check = False
+                break
+        if check:
+            tempPoint.append((x, y + 1))
+    if ((x - 1, y) not in GFS_arr and (x - 1, y) not in temp_GFS and 0 <= x - 1 < length and 0 <= y < width):
+        check = True
+        for obs in obstacles_arr:
+            if (x - 1, y) in obs:
+                check = False
+                break
+        if check:
+            tempPoint.append((x - 1, y))
+    if ((x, y - 1) not in GFS_arr and (x, y - 1) not in temp_GFS and 0 <= x < length and 0 <= y - 1 < width):
+        check = True
+        for obs in obstacles_arr:
+            if (x, y - 1) in obs:
+                check = False
+                break
+        if check:
+            tempPoint.append((x, y - 1))
+        
+    print(tempPoint)
+    if tempPoint == []:
+        temp = GFS_arr.pop()
+        temp_GFS.append(temp)
+        current = GFS_arr[len(GFS_arr) - 1]
+    else:
+        min = distance2(tempPoint[0], goal_point)
+        minP = tempPoint[0]
+        for point in tempPoint:
+            dis = distance2(point, goal_point)
+            if dis < min:
+                min = dis
+                minP = point
+        GFS_arr.append(minP)
+        current = minP
+print("Greedy-best First Search")
+print(GFS_arr)
 run = True
 while run:
     screen.fill(BLACK)
@@ -225,8 +293,15 @@ while run:
     for i in range(0, len(temp_BFS)):
         draw_rect(COLOR_ARR[1], temp_BFS[i])
 
-
+    # for i in range(0, len(temp_GFS)):
+    #     draw_rect(COLOR_ARR[1], temp_GFS[i])
+    # for i in range(0, len(GFS_arr)):
+    #     if(i % 5 == 0):
+    #         draw_rect(COLOR_ARR[0], GFS_arr[i])
+    #     else:
+    #         draw_rect(COLOR_ARR[2], GFS_arr[i])
     draw_rect(BLUE, source_point)
     draw_rect(BLUE, goal_point)
+
     pygame.display.flip()
 
