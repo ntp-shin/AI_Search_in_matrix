@@ -3,6 +3,12 @@ import pygame
 pygame.init()
 size = 40
 
+#Menu
+print("1. DFS")
+print("2. BFS")
+print("3. GFS")
+choose = int(input("==>> Nhap su lua chon cua ban:"))
+
 #Set-up Color:
 BLACK = (5, 5, 5)
 BLACK_1 = (10, 10, 10)
@@ -284,22 +290,24 @@ while run:
             if i == obstacles_n:
                 draw_rect(RED, obstacles_arr[i][j])
 
-    # for i in range(0, len(DFS_Stack)):
-    #     if(i % 5 == 0):
-    #         draw_rect(COLOR_ARR[0], DFS_Stack[i])
-    #     else:
-    #         draw_rect(COLOR_ARR[2], DFS_Stack[i])
+    if(choose == 1):
+        for i in range(0, len(DFS_Stack)):
+            if(i % 5 == 0):
+                draw_rect(COLOR_ARR[0], DFS_Stack[i])
+            else:
+                draw_rect(COLOR_ARR[2], DFS_Stack[i])
+    elif(choose == 2):
+        for i in range(0, len(temp_BFS)):
+            draw_rect(COLOR_ARR[1], temp_BFS[i])
 
-    for i in range(0, len(temp_BFS)):
-        draw_rect(COLOR_ARR[1], temp_BFS[i])
-
-    # for i in range(0, len(temp_GFS)):
-    #     draw_rect(COLOR_ARR[1], temp_GFS[i])
-    # for i in range(0, len(GFS_arr)):
-    #     if(i % 5 == 0):
-    #         draw_rect(COLOR_ARR[0], GFS_arr[i])
-    #     else:
-    #         draw_rect(COLOR_ARR[2], GFS_arr[i])
+    elif(choose == 3):
+        for i in range(0, len(temp_GFS)):
+            draw_rect(COLOR_ARR[1], temp_GFS[i])
+        for i in range(0, len(GFS_arr)):
+            if(i % 5 == 0):
+                draw_rect(COLOR_ARR[0], GFS_arr[i])
+            else:
+                draw_rect(COLOR_ARR[2], GFS_arr[i])
     draw_rect(BLUE, source_point)
     draw_rect(BLUE, goal_point)
 
