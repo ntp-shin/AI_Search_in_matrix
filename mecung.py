@@ -1,13 +1,6 @@
-# from matplotlib.pyplot import draw
 import pygame
 pygame.init()
 size = 40
-
-#Menu
-print("1. DFS")
-print("2. BFS")
-print("3. GFS")
-choose = int(input("==>> Nhap su lua chon cua ban:"))
 
 #Set-up Color:
 BLACK = (5, 5, 5)
@@ -26,9 +19,6 @@ def to_int(arr_point):
         arr_point[i] = (int(arr_point[i][0]), int(arr_point[i][1]))
 
 def distance(p1, p2):
-    return (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2
-
-def distance2(p1, p2):
     return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
 
 def add_obs(arr, point1, point2):
@@ -113,55 +103,55 @@ obstacles_arr.append(arr)
 print("Obstacles: ")
 print(obstacles_arr)
 
+# Ham phuc vu
+def top(p):
+    return p[0], p[1] - 1
+def bot(p):
+    return p[0], p[1] + 1
+def left(p):
+    return p[0] - 1, p[1]
+def right(p):
+    return p[0] + 1, p[1]
+def isInList(p, list):
+    for arr in list:
+        if p in arr:
+            return True
+    return False
 
 # DFS - Search
 DFS_Stack = []
 temp_DFS = []
 DFS_Stack.append(source_point)
 while goal_point not in DFS_Stack:
-    topPoint = DFS_Stack[len(DFS_Stack) - 1]
+    if DFS_Stack == []:
+        break
+    topPoint = DFS_Stack[-1]
     x = topPoint[0]
     y = topPoint[1]
-    if ((x + 1, y) not in DFS_Stack and (x + 1, y) not in temp_DFS and 0 <= x + 1 < length and 0 <= y < width):
-        check = True
-        for obs in obstacles_arr:
-            if (x + 1, y) in obs:
-                check = False
-                break
-        if check:
-            DFS_Stack.append((x + 1, y))
+    tren = top(topPoint)
+    duoi = bot(topPoint)
+    phai = right(topPoint)
+    trai = left(topPoint)
+    if (phai not in DFS_Stack and phai not in temp_DFS and 0 <= phai[0] < length and 0 <= phai[1] < width):
+        if not isInList(phai, obstacles_arr):
+            DFS_Stack.append(phai)
         else:
-            temp_DFS.append((x + 1, y))
-    elif ((x, y + 1) not in DFS_Stack and (x, y + 1) not in temp_DFS and 0 <= x < length and 0 <= y + 1 < width):
-        check = True
-        for obs in obstacles_arr:
-            if (x, y + 1) in obs:
-                check = False
-                break
-        if check:
-            DFS_Stack.append((x, y + 1))
+            temp_DFS.append(phai)
+    elif (duoi not in DFS_Stack and duoi not in temp_DFS and 0 <= duoi[0] < length and 0 <= duoi[1] < width):
+        if not isInList(duoi, obstacles_arr):
+            DFS_Stack.append(duoi)
         else:
-            temp_DFS.append((x, y + 1))
-    elif ((x - 1, y) not in DFS_Stack and (x - 1, y) not in temp_DFS and 0 <= x - 1 < length and 0 <= y < width):
-        check = True
-        for obs in obstacles_arr:
-            if (x - 1, y) in obs:
-                check = False
-                break
-        if check:
-            DFS_Stack.append((x - 1, y))
+            temp_DFS.append(duoi)
+    elif (trai not in DFS_Stack and trai not in temp_DFS and 0 <= x - 1 < length and 0 <= y < width):
+        if not isInList(trai, obstacles_arr):
+            DFS_Stack.append(trai)
         else:
-            temp_DFS.append((x - 1, y))
-    elif ((x, y - 1) not in DFS_Stack and (x, y - 1) not in temp_DFS and 0 <= x < length and 0 <= y - 1 < width):
-        check = True
-        for obs in obstacles_arr:
-            if (x, y - 1) in obs:
-                check = False
-                break
-        if check:
-            DFS_Stack.append((x, y - 1))
+            temp_DFS.append(trai)
+    elif (tren not in DFS_Stack and tren not in temp_DFS and 0 <= x < length and 0 <= y - 1 < width):
+        if not isInList(tren, obstacles_arr):
+            DFS_Stack.append(tren)
         else:
-            temp_DFS.append((x, y - 1))
+            temp_DFS.append(tren)
     else:
         temp = DFS_Stack.pop()
         temp_DFS.append(temp)
@@ -171,46 +161,117 @@ print("\n\n", DFS_Stack, "\n\n")
 # BFS -Search
 BFS_Queue = []
 temp_BFS = []
+path_BFS = []
+BFS_Queue.append(source_point)
 current = source_point
-while goal_point not in BFS_Queue:
-    x = current[0]
-    y = current[1]
-    if ((x + 1, y) not in BFS_Queue and (x + 1, y) not in temp_BFS and 0 <= x + 1 < length and 0 <= y < width):
-        check = True
-        for obs in obstacles_arr:
-            if (x + 1, y) in obs:
-                check = False
-                break
-        if check:
-            BFS_Queue.insert(0, (x + 1, y))
-    if ((x, y + 1) not in BFS_Queue and (x, y + 1) not in temp_BFS and 0 <= x < length and 0 <= y + 1 < width):
-        check = True
-        for obs in obstacles_arr:
-            if (x, y + 1) in obs:
-                check = False
-                break
-        if check:
-            BFS_Queue.insert(0, (x, y + 1))
-    if ((x - 1, y) not in BFS_Queue and (x - 1, y) not in temp_BFS and 0 <= x - 1 < length and 0 <= y < width):
-        check = True
-        for obs in obstacles_arr:
-            if (x - 1, y) in obs:
-                check = False
-                break
-        if check:
-            BFS_Queue.insert(0, (x - 1, y))
-    if ((x, y - 1) not in BFS_Queue and (x, y - 1) not in temp_BFS and 0 <= x < length and 0 <= y - 1 < width):
-        check = True
-        for obs in obstacles_arr:
-            if (x, y - 1) in obs:
-                check = False
-                break
-        if check:
-            BFS_Queue.insert(0, (x, y - 1))
-    print(BFS_Queue)
+find = True
+while goal_point not in temp_BFS:
+    tren = top(current)
+    duoi = bot(current)
+    phai = right(current)
+    trai = left(current)
+    if (phai not in BFS_Queue and phai not in temp_BFS and 0 <= phai[0] < length and 0 <= phai[1] < width):
+        if not isInList(phai, obstacles_arr):
+            BFS_Queue.insert(0, phai)
+    if (duoi not in BFS_Queue and duoi not in temp_BFS and 0 <= duoi[0] < length and 0 <= duoi[1] < width):
+        if not isInList(duoi, obstacles_arr):
+            BFS_Queue.insert(0, duoi)
+    if (trai not in BFS_Queue and trai not in temp_BFS and 0 <= trai[0] < length and 0 <= trai[1] < width):
+        if not isInList(trai, obstacles_arr):
+            BFS_Queue.insert(0, trai)
+    if (tren not in BFS_Queue and tren not in temp_BFS and 0 <= tren[0] < length and 0 <= tren[1] < width):
+        if not isInList(tren, obstacles_arr):
+            BFS_Queue.insert(0, tren)
+
     current = BFS_Queue.pop()
+    if BFS_Queue == []:
+        find = False
+        break
     if current not in temp_BFS:
         temp_BFS.append(current)
+
+BFS_Queue = []
+BFS_Queue.append(source_point)
+notOk = []
+while find and goal_point not in BFS_Queue:
+    current = BFS_Queue[len(BFS_Queue) - 1]
+    tren = top(current)
+    duoi = bot(current)
+    phai = right(current)
+    trai = left(current)
+    if(phai in temp_BFS and not phai in notOk):
+        BFS_Queue.append(phai)
+        notOk.append(phai)
+    elif duoi in temp_BFS and not duoi in notOk:
+        BFS_Queue.append(duoi)
+        notOk.append(duoi)
+    elif trai in temp_BFS and not trai in notOk:
+        BFS_Queue.append(trai)
+        notOk.append(trai)
+    elif tren in temp_BFS and not tren in notOk:
+        BFS_Queue.append(tren)
+        notOk.append(tren)
+    else:
+        nOk = BFS_Queue.pop()
+        notOk.append(nOk) 
+    
+print("This is BFS: ")
+print(BFS_Queue)
+
+# IDF - Search
+IDF_Stack = []
+temp_IDF = []
+IDF_Stack.append(source_point)
+depth = 2
+NotFind = True
+while NotFind:
+    if(goal_point in IDF_Stack):
+        NotFind = False
+        break
+
+    topStack = IDF_Stack[len(IDF_Stack) - 1]
+    x = topStack[0]
+    y = topStack[1]
+    tren = top(topStack)
+    duoi = bot(topStack)
+    phai = right(topStack)
+    trai = left(topStack)
+
+    if (phai not in IDF_Stack) and (phai not in temp_IDF) and (0 <= phai[0] < length) and (0 <= phai[1] < width) and (len(IDF_Stack) <= depth):
+        temp_IDF.append(phai)
+        if not isInList(phai, obstacles_arr):
+            IDF_Stack.append(phai)
+            
+    elif (duoi not in IDF_Stack) and (duoi not in temp_IDF) and (0 <= duoi[0] < length) and (0 <= duoi[1] < width) and (len(IDF_Stack) <= depth):
+        temp_IDF.append(duoi)
+        if not isInList(duoi, obstacles_arr):
+            IDF_Stack.append(duoi)
+        
+    elif (trai not in IDF_Stack and trai not in temp_IDF and 0 <= trai[0] < length and 0 <= trai[1] < width and len(IDF_Stack) <= depth):
+        temp_IDF.append(trai)
+        if not isInList(trai, obstacles_arr):
+            IDF_Stack.append(trai)
+
+    elif (top(topStack) not in IDF_Stack and top(topStack) not in temp_IDF and 0 <= x < length and 0 <= y - 1 < width and len(IDF_Stack) <= depth):
+        temp_IDF.append(top(topStack))
+        if not isInList(top(topStack), obstacles_arr):
+            IDF_Stack.append(top(topStack))
+
+    else:
+        temp = IDF_Stack.pop()
+        temp_IDF.append(temp)
+
+    if(IDF_Stack == []):
+        if depth == length * width:
+            break
+        temp_IDF = []
+        IDF_Stack.append(source_point)
+        depth = depth + 1
+
+
+print("\n\n", IDF_Stack, "\n\n")
+print("Depth = ", depth)
+print("Len IDF = ", len(IDF_Stack))
 
 # Greedy-best first search _ GFS
 GFS_arr = []
@@ -219,54 +280,38 @@ current = source_point
 GFS_arr.append(current)
 
 while goal_point not in GFS_arr:
+    if GFS_arr == []:
+        break
     x = current[0]
     y = current[1]
 
     tempPoint = []
-
-    if ((x + 1, y) not in GFS_arr and (x + 1, y) not in temp_GFS and 0 <= x + 1 < length and 0 <= y < width):
-        check = True
-        for obs in obstacles_arr:
-            if (x + 1, y) in obs:
-                check = False
-                break
-        if check:
-            tempPoint.append((x + 1, y))
-    if ((x, y + 1) not in GFS_arr and (x, y + 1) not in temp_GFS and 0 <= x < length and 0 <= y + 1 < width):
-        check = True
-        for obs in obstacles_arr:
-            if (x, y + 1) in obs:
-                check = False
-                break
-        if check:
-            tempPoint.append((x, y + 1))
-    if ((x - 1, y) not in GFS_arr and (x - 1, y) not in temp_GFS and 0 <= x - 1 < length and 0 <= y < width):
-        check = True
-        for obs in obstacles_arr:
-            if (x - 1, y) in obs:
-                check = False
-                break
-        if check:
-            tempPoint.append((x - 1, y))
-    if ((x, y - 1) not in GFS_arr and (x, y - 1) not in temp_GFS and 0 <= x < length and 0 <= y - 1 < width):
-        check = True
-        for obs in obstacles_arr:
-            if (x, y - 1) in obs:
-                check = False
-                break
-        if check:
-            tempPoint.append((x, y - 1))
+    tren = top(current)
+    duoi = bot(current)
+    phai = right(current)
+    trai = left(current)
+    if (phai not in GFS_arr and phai not in temp_GFS and 0 <= phai[0] < length and 0 <= phai[1] < width):
+        if not isInList(phai, obstacles_arr):
+            tempPoint.append(phai)
+    if (duoi not in GFS_arr and duoi not in temp_GFS and 0 <= duoi[0] < length and 0 <= duoi[1] < width):
+        if not isInList(duoi, obstacles_arr):
+            tempPoint.append(duoi)
+    if (trai not in GFS_arr and trai not in temp_GFS and 0 <= trai[0] < length and 0 <= trai[1] < width):
+        if not isInList(trai, obstacles_arr):
+            tempPoint.append(trai)
+    if (tren not in GFS_arr and tren not in temp_GFS and 0 <= tren[0] < length and 0 <= tren[1] < width):
+        if not isInList(tren, obstacles_arr):
+            tempPoint.append(tren)
         
-    print(tempPoint)
     if tempPoint == []:
         temp = GFS_arr.pop()
         temp_GFS.append(temp)
-        current = GFS_arr[len(GFS_arr) - 1]
+        current = GFS_arr[-1]
     else:
-        min = distance2(tempPoint[0], goal_point)
+        min = distance(tempPoint[0], goal_point)
         minP = tempPoint[0]
         for point in tempPoint:
-            dis = distance2(point, goal_point)
+            dis = distance(point, goal_point)
             if dis < min:
                 min = dis
                 minP = point
@@ -274,42 +319,65 @@ while goal_point not in GFS_arr:
         current = minP
 print("Greedy-best First Search")
 print(GFS_arr)
+
+temp = []
+search = []
+did = []
+path = []
 run = True
+ii = 0
+jj = 0
 while run:
     screen.fill(BLACK)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_1:
+                did = temp_BFS
+                path = BFS_Queue
+            if event.key == pygame.K_2:
+                did = temp_IDF
+                path = IDF_Stack
+            if event.key == pygame.K_3:
+                did = temp_GFS
+                path = GFS_arr
+            if event.key == pygame.K_0:
+                path = DFS_Stack
+            if event.key == pygame.K_SPACE:
+                did  = []
+                path = []
+                temp = []
+                search = []
+                ii = 0
+                jj = 0
+
     for i in range(0, length):
         for j in range(0, width):
             if (i + j) % 2 == 0:
                 draw_rect(BLACK_1, (i, j))
+
+    for i in range(0, len(temp)):
+        draw_rect(COLOR_ARR[4], temp[i])
+    if(ii < len(did)):
+        temp.append(did[i])
+        ii = ii + 1
+    elif(jj < len(path)):
+        search.append(path[jj])
+        jj = jj + 1
+
+
+    for i in range(0, len(search)):
+        if(i % 5 == 0):
+            draw_rect(COLOR_ARR[0], search[i])
+        else:
+            draw_rect(COLOR_ARR[2], search[i])
     for i in range(0, obstacles_n + 1):
         for j in range(0, len(obstacles_arr[i])):
             draw_rect(RED, obstacles_arr[i][j])
             if i == obstacles_n:
                 draw_rect(RED, obstacles_arr[i][j])
-
-    if(choose == 1):
-        for i in range(0, len(DFS_Stack)):
-            if(i % 5 == 0):
-                draw_rect(COLOR_ARR[0], DFS_Stack[i])
-            else:
-                draw_rect(COLOR_ARR[2], DFS_Stack[i])
-    elif(choose == 2):
-        for i in range(0, len(temp_BFS)):
-            draw_rect(COLOR_ARR[1], temp_BFS[i])
-
-    elif(choose == 3):
-        for i in range(0, len(temp_GFS)):
-            draw_rect(COLOR_ARR[1], temp_GFS[i])
-        for i in range(0, len(GFS_arr)):
-            if(i % 5 == 0):
-                draw_rect(COLOR_ARR[0], GFS_arr[i])
-            else:
-                draw_rect(COLOR_ARR[2], GFS_arr[i])
     draw_rect(BLUE, source_point)
     draw_rect(BLUE, goal_point)
 
     pygame.display.flip()
-
